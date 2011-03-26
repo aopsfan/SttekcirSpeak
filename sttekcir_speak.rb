@@ -9,7 +9,6 @@ class SttekcirSpeak
   
   def self.ask_for_input
     tips_array = [
-      "You cannot use `, ~, < or > in your messages",
       "A version is secretly hidden within each encoded message, so you don't have to enter your own enter one before decoding!",
       "This is certainly NOT a helpful tip :)"
     ]

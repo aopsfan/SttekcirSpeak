@@ -1,6 +1,6 @@
 class Versioned
   def self.support
-    ["1.0", "1.1"]
+    ["1.0", "1.1", "1.2"]
   end
   
   def self.supported?(version)
@@ -22,6 +22,9 @@ class Versioned
       base_hash
     elsif version == "1.1"
       base_hash.merge "<" => 744, ">" => 745, "$" => 746
+    elsif version == "1.2"
+      base_hash.merge "<" => 744, ">" => 745, "$" => 746
+      base_hash.merge "~" => 754, "`" => 755
     else
       {}
     end
