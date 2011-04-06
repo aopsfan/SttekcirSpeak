@@ -4,8 +4,6 @@ You should love it, forever.
 
 To run this, simply execute the `sttekcir_speak.rb` file.
 
-``
-def self.welcome_with(password)
-  return ask("Welcome to SttekcirSpeak.  Enter password: ") {|q| q.echo = "*"} == password
-end
-``
+    def self.welcome_with(password)
+      return ask("Welcome to SttekcirSpeak.  Enter password: ") {|q| q.echo = "*"} == password
+    end
