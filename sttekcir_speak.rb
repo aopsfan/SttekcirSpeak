@@ -1,5 +1,6 @@
 load 'secret_decoder.rb'
 load 'secret_coder.rb'
+require 'rubygems'
 require 'highline/import'
 
 class SttekcirSpeak
