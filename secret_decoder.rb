@@ -1,23 +1,21 @@
 load 'version_system.rb'
 
 class Decoder
-  def initialize
-    @version = Versioned.support.last
-    @reverse_data = {}
-  end
-  
   def decode(input)
-    @version = split_for(input)[:version]
-    @reverse_data = Versioned.hash_for(@version).invert
+    @manager = VersionManager.new
     
-    numbers = split_for(input)[:input]
+    split = split_for(input)
+    @version = split[:version]
+    @reverse_data = @version.hash.invert
+    
+    numbers = split[:input]
     
     new_numbers = []
     
     i = 0
 
     numbers.each do |number|
-      if number == Versioned.next_token_for(@version) && new_numbers[i] != Versioned.digit_token_for(@version)
+      if number == @version.next_token && new_numbers[i] != @version.digit_token
         i += 1
       elsif !new_numbers[i]
         new_numbers << number
@@ -34,8 +32,8 @@ class Decoder
         char = array.delete_at(0)
         new_number = array.join("")
         
-        letters << @reverse_data[new_number.to_i].capitalize if char == Versioned.cap_token_for(@version)
-        letters << new_number if char == Versioned.digit_token_for(@version)
+        letters << @reverse_data[new_number.to_i].capitalize if char == @version.cap_token
+        letters << new_number if char == @version.digit_token
       else
         letters << @reverse_data[number.to_i]
       end
@@ -43,17 +41,23 @@ class Decoder
 
     {
       :output => letters.join(""),
-      :version => @version,
+      :version => @version.id,
       :errors => "No errors!"
     }
-  rescue
-    errors = []
-    
-    {
-      :output => "No output",
-      :version => @version,
-      :errors => "Invalid code or version (your current version is #{@version}, latest version is #{Versioned.support.last})."
-    }
+  # rescue
+  #   if !@version
+  #     {
+  #       :output => "No output",
+  #       :version => "",
+  #       :errors => "No version"
+  #     }
+  #   else
+  #     {
+  #       :output => "No output",
+  #       :version => @version.id,
+  #       :errors => "Invalid code or version (your current version is #{@version.id}, latest version is #{VersionSupport.latest_version})."
+  #     }
+  #   end
   end
   
   private
@@ -64,14 +68,14 @@ class Decoder
       new_numbers = array.last.split(//)
       
       {
-        :version => version,
+        :version => @manager.version_with(version),
         :input => new_numbers
       }
     end
   
     def split?(number)
       character = number.split(//).first
-      if character == Versioned.cap_token_for(@version) || character == Versioned.digit_token_for(@version)
+      if character == @version.cap_token || character == @version.digit_token
         true
       else
         false

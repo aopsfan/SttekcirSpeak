@@ -3,28 +3,27 @@ load 'version_system.rb'
 class Encoder
   def initialize(version)
     @version = version
-    @data = Versioned.hash_for(@version)
   end
   
   def encode(input)
     characters = input.split(//)
     output = []
     errors = []
-    error_message = "The following characters are not supported by version #{@version}: "
+    error_message = "The following characters are not supported by version #{@version.id}: "
     
     characters.each do |char|
       if is_capital_character?(char)
-        output << Versioned.cap_token_for(@version) + @data[char.downcase].to_s + Versioned.next_token_for(@version)
+        output << @version.cap_token + @version.hash[char.downcase].to_s + @version.next_token
       elsif is_digit?(char)
-        output << Versioned.digit_token_for(@version) + char + Versioned.next_token_for(@version)
+        output << @version.digit_token + char + @version.next_token
       elsif is_unknown?(char)
         errors << char unless errors.include?(char)
       else
-        output << @data[char].to_s + Versioned.next_token_for(@version)
+        output << @version.hash[char].to_s + @version.next_token
       end
     end
     
-    combined_output = "#{@version}V#{output.join("")}"
+    combined_output = "#{@version.id}V#{output.join("")}"
     
     if errors.empty?
       errors = "No errors!"
@@ -45,10 +44,10 @@ class Encoder
     end
     
     def is_capital_character?(input)
-      return !@data[input] && @data[input.downcase]
+      return !@version.hash[input] && @version.hash[input.downcase]
     end
     
     def is_unknown?(input)
-      return !@data[input] && !is_capital_character?(input) && !is_digit?(input)
+      return !@version.hash[input] && !is_capital_character?(input) && !is_digit?(input)
     end
 end

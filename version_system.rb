@@ -1,13 +1,9 @@
-class Versioned
-  def self.support
-    ["1.0", "1.1", "1.2"]
-  end
+load 'version.rb'
+
+class VersionManager
+  attr_accessor :all_versions, :latest_version
   
-  def self.supported?(version)
-    support.include?(version)
-  end
-  
-  def self.hash_for(version)
+  def initialize
     base_hash = {
       "a" => 111, "b" => 112, "c" => 113, "d" => 121, "e" =>  122, "f" => 123, "g" => 131, "h" =>  132,
       "i" => 133, "j" => 211, "k" => 212, "l" => 213, "m" =>  221, "n" => 222, "o" => 223, "p" =>  231,
@@ -17,28 +13,37 @@ class Versioned
       "_" => 554, "=" => 555, "+" => 556, "[" => 564, "{" =>  565, "]" => 566, "}" => 644, "\\" => 645,
       "|" => 646, ";" => 654, ":" => 655, "'" => 656, "\"" => 664, "/" => 665, "," => 666
     }
+    one_zero = Version.new({
+      :id => "1.0",
+      :hash => base_hash,
+      :next_token => "9",
+      :cap_token => "C",
+      :digit_token => "D"
+    })
+    one_one = Version.new({
+      :id => "1.1",
+      :hash => base_hash.merge!("<" => 744, ">" => 745, "$" => 746),
+      :next_token => "9",
+      :cap_token => "C",
+      :digit_token => "D"
+    })
+    one_two = Version.new({
+      :id => "1.2",
+      :hash => base_hash.merge!("~" => 754, "`" => 755),
+      :next_token => "9",
+      :cap_token => "C",
+      :digit_token => "D"
+    })
     
-    if version == "1.0"
-      base_hash
-    elsif version == "1.1"
-      base_hash.merge "<" => 744, ">" => 745, "$" => 746
-    elsif version == "1.2"
-      base_hash.merge "<" => 744, ">" => 745, "$" => 746
-      base_hash.merge "~" => 754, "`" => 755
-    else
-      {}
+    @all_versions = [one_zero, one_one, one_two]
+    @latest_version = @all_versions.last
+  end
+  
+  def version_with(id)
+    v = @all_versions.detect do |version|
+      version.id == id
     end
+    
+    return v
   end
-  
-  def self.next_token_for(version)
-    "9"
-  end
-  
-  def self.cap_token_for(version)
-    "C"
-  end
-  
-  def self.digit_token_for(version)
-    "D"
-  end
-end 
+end

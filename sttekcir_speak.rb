@@ -36,10 +36,10 @@ class SttekcirSpeak
     puts("\n")
   end
   
-  def self.encode
+  def self.encode(manager)
     puts("You have chosen to encode")
-    version = ask("Which version do you prefer to encode in (latest version is #{Versioned.support.last}): ")
-    encoder = Encoder.new(version)
+    version = ask("Which version do you prefer to encode in (latest version is #{manager.latest_version.id}): ")
+    encoder = Encoder.new(manager.version_with(version))
     puts("You may now type a message to encode:")
     puts("\n")
     input = ask(" input: ")
@@ -52,12 +52,14 @@ class SttekcirSpeak
 end
 
 if SttekcirSpeak.welcome_with("")
+  manager = VersionManager.new
+  
   while true
     message = SttekcirSpeak.ask_for_input
     if message == 'decode'
       SttekcirSpeak.decode
     elsif message == 'encode'
-      SttekcirSpeak.encode
+      SttekcirSpeak.encode(manager)
     elsif message == 'quit'
       break
     end
