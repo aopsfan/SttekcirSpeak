@@ -44,20 +44,20 @@ class Decoder
       :version => @version.id,
       :errors => "No errors!"
     }
-  # rescue
-  #   if !@version
-  #     {
-  #       :output => "No output",
-  #       :version => "",
-  #       :errors => "No version"
-  #     }
-  #   else
-  #     {
-  #       :output => "No output",
-  #       :version => @version.id,
-  #       :errors => "Invalid code or version (your current version is #{@version.id}, latest version is #{VersionSupport.latest_version})."
-  #     }
-  #   end
+  rescue
+    if !@version
+      {
+        :output => "No output",
+        :version => "",
+        :errors => "No version"
+      }
+    else
+      {
+        :output => "No output",
+        :version => @version.id,
+        :errors => "Invalid code or version (your current version is #{@version.id}, latest version is #{VersionSupport.latest_version})."
+      }
+    end
   end
   
   private

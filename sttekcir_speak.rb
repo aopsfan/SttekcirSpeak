@@ -2,15 +2,20 @@ load 'secret_decoder.rb'
 load 'secret_coder.rb'
 require 'highline/import'
 
-class SttekcirSpeak
+class SttekcirSpeak 
   def self.welcome_with(password)
-    return ask("Welcome to SttekcirSpeak.  Enter password: ") {|q| q.echo = "*"} == password
+    if ask("Welcome to SttekcirSpeak.  Enter password: ") {|q| q.echo = ""} == password
+      return ask("Enter second password: ") {|q| q.echo = true} == "~/Documents/My\\ Docs/Journal/B/B/Sttekcir\\ Speak/"
+    else
+      return false
+    end
   end
   
   def self.ask_for_input
     tips_array = [
       "A version is secretly hidden within each encoded message, so you don't have to enter your own enter one before decoding!",
-      "This is certainly NOT a helpful tip :)"
+      "This is certainly NOT a helpful tip :)",
+      "Try encoding an encoded message!"
     ]
     
     helpful_tip = tips_array[rand(tips_array.count)]
@@ -51,7 +56,7 @@ class SttekcirSpeak
   end
 end
 
-if SttekcirSpeak.welcome_with("")
+if SttekcirSpeak.welcome_with("thegreatday")
   manager = VersionManager.new
   
   while true
